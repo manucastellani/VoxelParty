@@ -1,0 +1,239 @@
+/* Viewport canvas area */
+#viewport-canvas {
+  width: 100%; height: 100%;
+  position: relative;
+  background:
+    linear-gradient(rgba(0, 212, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(rgba(0, 212, 255, 0.008) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.008) 1px, transparent 1px),
+    var(--bg-base);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+  overflow: hidden;
+}
+
+/* Perspective illusion overlay */
+#viewport-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, transparent 40%, rgba(9, 11, 16, 0.7) 100%);
+  pointer-events: none;
+}
+
+/* Mock 3D objects */
+.mock-object {
+  position: absolute;
+  cursor: pointer;
+  transition: filter var(--transition-fast);
+}
+.mock-object:hover { filter: brightness(1.2); }
+
+/* Cube */
+.mock-cube {
+  width: 90px; height: 90px;
+  background: linear-gradient(135deg, #1a2035 0%, #0f1520 100%);
+  border: 1px solid rgba(100, 130, 200, 0.3);
+  border-radius: 3px;
+  transform: rotate(-15deg) skewY(5deg);
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.mock-cube.selected {
+  border-color: var(--accent-cyan);
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.5), 0 0 0 2px var(--accent-cyan), 0 0 20px var(--accent-cyan-glow);
+}
+.mock-cube::after {
+  content: '';
+  position: absolute;
+  top: -30px; left: 8px;
+  width: 90px; height: 30px;
+  background: linear-gradient(135deg, #1e2840 0%, #151c2c 100%);
+  border: 1px solid rgba(100, 130, 200, 0.25);
+  border-bottom: none;
+  transform: skewX(-45deg);
+  border-radius: 2px 2px 0 0;
+}
+.mock-cube::before {
+  content: '';
+  position: absolute;
+  top: 0; right: -30px;
+  width: 30px; height: 90px;
+  background: linear-gradient(180deg, #121826 0%, #0c1119 100%);
+  border: 1px solid rgba(100, 130, 200, 0.15);
+  border-left: none;
+  transform: skewY(-45deg);
+  border-radius: 0 2px 2px 0;
+}
+
+/* Sphere */
+.mock-sphere {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #1e2a45 0%, #0b1020 70%);
+  border: 1px solid rgba(100, 130, 200, 0.2);
+  box-shadow:
+    4px 8px 20px rgba(0,0,0,0.6),
+    inset -8px -8px 20px rgba(0,0,0,0.4),
+    inset 4px 4px 10px rgba(255,255,255,0.04);
+}
+
+/* Wall */
+.mock-wall {
+  width: 160px; height: 50px;
+  background: linear-gradient(180deg, #171e30 0%, #0f1520 100%);
+  border: 1px solid rgba(100, 130, 200, 0.2);
+  transform: perspective(400px) rotateX(10deg);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+/* Selection outline label */
+.selection-label {
+  position: absolute;
+  top: -24px; left: 0;
+  background: var(--accent-cyan);
+  color: #000;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+/* Transform gizmo arrows (mock) */
+.gizmo-overlay {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Viewport controls overlay */
+#vp-controls {
+  position: absolute;
+  bottom: var(--sp-4);
+  right: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  align-items: flex-end;
+}
+
+.vp-control-group {
+  display: flex;
+  gap: 2px;
+  background: rgba(14, 17, 23, 0.85);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  backdrop-filter: blur(8px);
+}
+
+.vp-btn {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+.vp-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+
+/* Axis gizmo */
+#axis-gizmo {
+  position: absolute;
+  top: var(--sp-4);
+  right: var(--sp-4);
+  width: 64px; height: 64px;
+  background: rgba(14, 17, 23, 0.75);
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
+}
+#axis-gizmo svg { width: 48px; height: 48px; }
+
+/* Camera info */
+#vp-cam-info {
+  position: absolute;
+  top: var(--sp-4);
+  left: var(--sp-4);
+  background: rgba(14, 17, 23, 0.75);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  backdrop-filter: blur(8px);
+  line-height: 1.8;
+}
+#vp-cam-info span { color: var(--text-secondary); }
+
+/* Selection info bar */
+#vp-selection-bar {
+  position: absolute;
+  bottom: var(--sp-4);
+  left: var(--sp-4);
+  background: rgba(14, 17, 23, 0.85);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.sel-item {
+  display: flex; align-items: center; gap: var(--sp-1);
+}
+.sel-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 6px var(--accent-cyan);
+}
+
+/* User cursor indicators */
+.user-cursor {
+  position: absolute;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+.user-cursor-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+}
+.user-cursor-label {
+  position: absolute;
+  left: 14px; top: -2px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  background: rgba(14,17,23,0.85);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+  opacity: 0.85;
+}
+
+/* Empty state */
+#vp-empty {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+  gap: var(--sp-4);
+  color: var(--text-muted);
+}
+.vp-empty-icon {
+  width: 48px; height: 48px;
+  opacity: 0.3;
+}

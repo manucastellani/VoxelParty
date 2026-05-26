@@ -1,0 +1,117 @@
+/* App shell */
+#app {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  grid-template-rows: var(--topbar-h) 1fr;
+  grid-template-columns: var(--toolbar-w) var(--panel-left-w) 1fr var(--panel-right-w);
+  grid-template-areas:
+    "topbar  topbar   topbar    topbar"
+    "toolbar scene    viewport  props";
+  overflow: hidden;
+}
+
+/* Top bar */
+#topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4);
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 100;
+  position: relative;
+}
+
+/* Toolbar */
+#toolbar {
+  grid-area: toolbar;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--sp-3) 0;
+  gap: var(--sp-1);
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border-subtle);
+  overflow-y: auto;
+  z-index: 50;
+}
+
+/* Scene panel */
+#panel-scene {
+  grid-area: scene;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+/* Viewport */
+#viewport {
+  grid-area: viewport;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+
+/* Properties panel */
+#panel-props {
+  grid-area: props;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+/* Panel header */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  min-height: 38px;
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Divider */
+.panel-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--sp-2) 0;
+}
+
+/* Section inside panel */
+.panel-section {
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.panel-section + .panel-section {
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Collapsible section */
+.section-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-2) 0;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+.section-toggle:hover { color: var(--text-primary); }
+.section-toggle .chevron {
+  margin-left: auto;
+  transition: transform var(--transition-fast);
+}
+.section-toggle.collapsed .chevron { transform: rotate(-90deg); }
